@@ -29,27 +29,30 @@ def reload_db():
         print("The database is not loaded. Exiting.")
         exit()
         
+reload_db()
+        
 # Loading block list from internet if enabled
-block_list={}
+block_list = {}
+
 def load_block_list():
     global block_list
     if os.getenv('LBS_BLOCK_LIST') == "true":
         print("Loading block list.")
         listreq = requests.get("https://littlebitstudios.com/splatchain-block-list.yaml")
         block_list = yaml.safe_load(listreq.text)
+        print(f"Block list loaded: {block_list}")
 
 load_block_list()
-    
-def user_block_check(user: discord.User):
+
+def user_block_check(user: discord.User) -> bool:
     global block_list
     if os.getenv('LBS_BLOCK_LIST') == "true":
-        if user.name in block_list['blocked_usernames']:
+        print(f"Checking block list for user: {user.name} (ID: {user.id})")
+        if user.name in block_list.get('blocked_usernames', []):
             return True
-        if user.id in block_list['blocked_user_ids']:
+        if user.id in block_list.get('blocked_user_ids', []):
             return True
     return False
-
-reload_db()
 
 # Detecting duplicates
 def detect_duplicates(profiles):
