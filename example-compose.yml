@@ -1,0 +1,15 @@
+version: '3.9'
+
+services:
+  splatchaindiscord:
+    image: splatchaindiscord
+    container_name: splatchaindiscord
+    restart: unless-stopped
+    environment:
+      - BOT_TOKEN= # Your bot token; get this from the Discord Developer Portal
+      - LBS_BLOCK_LIST=true # If true, your instance of the bot will use LittleBit Studios' block list for blocking users. Section 1 of the SplatChain Bot Terms applies if this is true.
+      - LBS_BLOCK_SERVERS=true # If both this and LBS_BLOCK_LIST are true, your instance of the bot will use LittleBit Studios' block list and block servers. The entire SplatChain Bot Terms applies to your instance if this is true.
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./data:/app/data
