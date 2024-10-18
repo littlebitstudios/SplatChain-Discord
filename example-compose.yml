@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   splatchaindiscord:
-    image: splatchaindiscord
+    image: ghcr.io/littlebitstudios/splatchain-discord:latest
     container_name: splatchaindiscord
     restart: unless-stopped
     environment:
