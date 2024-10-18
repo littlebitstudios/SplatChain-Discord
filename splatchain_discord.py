@@ -37,6 +37,8 @@ def load_block_list():
         print("Loading block list.")
         listreq = requests.get("https://littlebitstudios.com/splatchain-block-list.yaml")
         block_list = yaml.safe_load(listreq.text)
+
+load_block_list()
     
 def user_block_check(user: discord.User):
     global block_list
@@ -738,18 +740,22 @@ async def periodic_reload_db():
     
 @tasks.loop(minutes=5)
 async def server_block_check():
+    already_pinged_owners = []
+    
     if os.getenv('LBS_BLOCK_LIST') == "true" and os.getenv('LBS_BLOCK_SERVERS') == "true":
         for guild in bot.guilds:
             if guild.owner.name in block_list['blocked_usernames'] or guild.owner.id in block_list['blocked_user_ids']:
-                print(f"Owner of {guild.name} is on the block list. Kicking the bot.")
-                embed=discord.Embed(
+                if not guild.owner.id in already_pinged_owners:
+                    print(f"Owner of {guild.name} is on the block list. Kicking the bot.")
+                    embed=discord.Embed(
                     title="This bot has left all of your servers.",
                     description=f"You have been banned from the SplatChain Bot due to a violation of its TOS.\nThis bot has left any servers you own.",
                     color=discord.colour.Color.red()
-                )
-                embed.set_footer(text="If you wish to appeal, DM littlebit670.")
-                await guild.owner.send(embed=embed)
-                await guild.leave()
+                    )
+                    embed.set_footer(text="If you wish to appeal, DM littlebit670.")
+                    await guild.owner.send(embed=embed)
+                    already_pinged_owners.append(guild.owner.id)
+                    await guild.leave()
             elif guild.id in block_list['blocked_servers']:
                 print(f"{guild.name} is on the block list. Kicking the bot.")
                 embed=discord.Embed(
