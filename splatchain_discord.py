@@ -92,7 +92,7 @@ def profile_validator(profile):
             print("Usernames must end in .ink and contain only lowercase letters, numbers, and periods!")
             profile["username"] = ""
         
-    if re.match(r"^[1-9A-HJ-NP-Za-km-z]{34}$", profile['address']) is None:
+    if re.match(r"^[1-9A-HJ-NP-Za-km-z]{44}$", profile['address']) is None:
         print(f"Address {profile['address']} has an invalid address. Regenerating address.")
         profile['address'] = "".join(secrets.choice(addr_chars) for _ in range(44))
         
