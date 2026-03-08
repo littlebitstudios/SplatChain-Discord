@@ -132,6 +132,8 @@ def write_changes():
         writer = csv.DictWriter(profiles_csv, fieldnames=profiles[0].keys())
         writer.writeheader()
         writer.writerows(profiles)
+        
+write_changes()
 
 # Discord bot setup
 intents = discord.Intents.default()
