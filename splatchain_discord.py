@@ -13,6 +13,7 @@ import yaml
 # Global variables
 db_file = "./data/splatwallet.csv"
 profiles = []
+addr_chars = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz" # base58
 
 # Loading database
 def reload_db():
@@ -91,10 +92,9 @@ def profile_validator(profile):
             print("Usernames must end in .ink and contain only lowercase letters, numbers, and periods!")
             profile["username"] = ""
         
-    if re.match(r"[0-9a-fA-F]{40}", profile['address']) is None:
+    if re.match(r"^[1-9A-HJ-NP-Za-km-z]{34}$", profile['address']) is None:
         print(f"Address {profile['address']} has an invalid address. Regenerating address.")
-        valid_chars = "0123456789abcdefABCDEF"
-        profile['address'] = "".join(secrets.choice(valid_chars) for _ in range(40))
+        profile['address'] = "".join(secrets.choice(addr_chars) for _ in range(44))
         
     if "," in profile['balance']:
         print(f"Address {profile['address']} has commas in the balance, removing the commas")
@@ -220,7 +220,7 @@ async def new_wallet(ctx: discord.Interaction, nickname: str, username: str, typ
         await ctx.response.send_message(embed=embed, ephemeral=True)
         return
 
-    new_address = "".join(secrets.choice("0123456789abcdefABCDEF") for _ in range(40))
+    new_address = "".join(secrets.choice(addr_chars) for _ in range(44))
     
     if not username.endswith(".ink") or not re.match(r"^[a-z0-9.]+$", username):
         embed=discord.Embed(
@@ -236,7 +236,7 @@ async def new_wallet(ctx: discord.Interaction, nickname: str, username: str, typ
         "nickname": nickname,
         "username": username,
         "type": type,
-        "owner": f"discord/{ctx.user.name}",
+        "owner": f"discord/{ctx.user.id}",
         "balance": str(startingbalance),
         "share": share
     }
@@ -283,7 +283,7 @@ async def delete_wallet(ctx: discord.Interaction, wallet: str, force: bool=False
     to_remove = wallet
     profile = next((profile for profile in profiles if profile["address"] == to_remove or profile["username"] == to_remove), None)
     if profile:
-        if profile["owner"] != f"discord/{ctx.user.name}" and not force:
+        if profile["owner"] != f"discord/{ctx.user.id}" and not force:
             embed=discord.Embed(
                 title="Did you mean to do that?",
                 description="**You just tried to delete a wallet that you don't own.**\nDouble-check what you entered.\n\n*If you really meant that, try again with 'force' set to true.*",
@@ -298,7 +298,7 @@ async def delete_wallet(ctx: discord.Interaction, wallet: str, force: bool=False
             await ctx.response.send_message(embed=embed, ephemeral=True)
             return
     
-        if profile['owner'] != f"discord/{ctx.user.name}" and force:
+        if profile['owner'] != f"discord/{ctx.user.id}" and force:
             owner_name = profile['owner'].split("/")[1]
             owner = discord.utils.get(bot.get_all_members(), name=owner_name)
             if owner:
@@ -348,7 +348,7 @@ async def transfer(ctx: discord.Interaction, fromwallet: str, towallet: str, amo
         await ctx.response.send_message(embed=embed, ephemeral=True)
         return
     
-    if from_profile["owner"] != f"discord/{ctx.user.name}" and not force:
+    if from_profile["owner"] != f"discord/{ctx.user.id}" and not force:
         embed=discord.Embed(
             title="Did you mean to do that?",
             description="**You just tried to transfer from a wallet that you don't own.**\nDouble-check what you entered.\n\n*If you really meant that, try again with 'force' set to true.*",
@@ -363,7 +363,7 @@ async def transfer(ctx: discord.Interaction, fromwallet: str, towallet: str, amo
         await ctx.response.send_message(embed=embed, ephemeral=True)
         return
     
-    if from_profile['owner'] != f"discord/{ctx.user.name}" and force and not from_profile['share']:
+    if from_profile['owner'] != f"discord/{ctx.user.id}" and force and not from_profile['share']:
             owner_name = profile['owner'].split("/")[1]
             owner = discord.utils.get(bot.get_all_members(), name=owner_name)
             if owner:
@@ -392,7 +392,7 @@ async def transfer(ctx: discord.Interaction, fromwallet: str, towallet: str, amo
     to_profile["balance"] = str(int(to_profile["balance"]) + amount)
     write_changes()
     
-    if from_profile['owner'] == f"discord/{ctx.user.name}" and to_profile['owner'] == f"discord/{ctx.user.name}" and not show:
+    if from_profile['owner'] == f"discord/{ctx.user.id}" and to_profile['owner'] == f"discord/{ctx.user.id}" and not show:
         # Hide the message from others if both wallets are owned by the same user
         await ctx.response.send_message(f"{amount:,} SPLC transferred from {from_profile['username']} to {to_profile['username']}.", ephemeral=True)
     else:
@@ -419,7 +419,7 @@ async def edit_profile(ctx: discord.Interaction, wallet: str, nickname: str="", 
     profile = next((profile for profile in profiles if profile["address"] == input_address or profile["username"] == input_address), None)
     old_profile = profile.copy()
     
-    if profile["owner"] != f"discord/{ctx.user.name}" and not force:
+    if profile["owner"] != f"discord/{ctx.user.id}" and not force:
         embed=discord.Embed(
             title="Did you mean to do that?",
             description="**You just tried to edit a wallet that you don't own.**\nDouble-check what you entered.\n\n*If you really meant that, try again with 'force' set to true.*",
@@ -435,7 +435,7 @@ async def edit_profile(ctx: discord.Interaction, wallet: str, nickname: str="", 
         await ctx.response.send_message(embed=embed, ephemeral=True)
         return
     
-    if profile['owner'] != f"discord/{ctx.user.name}" and force:
+    if profile['owner'] != f"discord/{ctx.user.id}" and force:
             owner_name = profile['owner'].split("/")[1]
             owner = discord.utils.get(bot.get_all_members(), name=owner_name)
             if owner:
@@ -466,7 +466,7 @@ async def edit_profile(ctx: discord.Interaction, wallet: str, nickname: str="", 
             profile["balance"] = str(balance)
             
         if claim:
-            profile["owner"] = f"discord/{ctx.user.name}"
+            profile["owner"] = f"discord/{ctx.user.id}"
             
         profile['share'] = share
         
@@ -496,7 +496,7 @@ async def edit_profile(ctx: discord.Interaction, wallet: str, nickname: str="", 
         if balance:
             embed.add_field(name="New Balance", value=f"{balance:,} SPLC (was {int(old_profile['balance']):,} SPLC)", inline=False)
         if claim:
-            embed.add_field(name="New Owner", value=f"discord/{ctx.user.name} (was {old_profile['owner']})", inline=False)
+            embed.add_field(name="New Owner", value=f"discord/{ctx.user.id} (was {old_profile['owner']})", inline=False)
         if share:
             if old_profile['share']:
                 embed.add_field(name="New Sharing Enabled State", value=f"{share} (was {old_profile['share']})", inline=False)
@@ -534,7 +534,7 @@ async def inject_splc(ctx: discord.Interaction, wallet: str, amount: int, force:
     
     profile = next((profile for profile in profiles if profile["address"] == wallet or profile["username"] == wallet), None)
     if profile:
-        if profile["owner"] != f"discord/{ctx.user.name}" and not force:
+        if profile["owner"] != f"discord/{ctx.user.id}" and not force:
             embed=discord.Embed(
                 title="Did you mean to do that?",
                 description="**You just tried to inject SPLC a wallet that you don't own.**\nDouble-check what you entered.\n\n*If you really meant that, try again with 'force' set to true.*",
@@ -580,7 +580,7 @@ async def burn_splc(ctx: discord.Interaction, wallet: str, amount: int, force: b
     profile = next((profile for profile in profiles if profile["address"] == wallet or profile["username"] == wallet), None)
     
     if profile:
-        if profile["owner"] != f"discord/{ctx.user.name}" and not force:
+        if profile["owner"] != f"discord/{ctx.user.id}" and not force:
             embed=discord.Embed(
                 title="Did you mean to do that?",
                 description="**You just tried to burn SPLC from a wallet that you don't own.**\nDouble-check what you entered.\n\n*If you really meant that, try again with 'force' set to true.*",
@@ -595,7 +595,7 @@ async def burn_splc(ctx: discord.Interaction, wallet: str, amount: int, force: b
             await ctx.response.send_message(embed=embed, ephemeral=True)
             return
     
-        if profile['owner'] != f"discord/{ctx.user.name}" and force:
+        if profile['owner'] != f"discord/{ctx.user.id}" and force:
             owner_name = profile['owner'].split("/")[1]
             owner = discord.utils.get(bot.get_all_members(), name=owner_name)
             if owner:
@@ -645,7 +645,7 @@ async def my_wallets(ctx: discord.Interaction, show: bool=False):
     
     owned_by_user = []
     for profile in profiles:
-        if profile["owner"] == f"discord/{ctx.user.name}":
+        if profile["owner"] == f"discord/{ctx.user.id}":
             owned_by_user.append(profile)
     
     if len(owned_by_user) == 0:
