@@ -144,6 +144,7 @@ tree = app_commands.CommandTree(bot)
 async def on_ready():
     await tree.sync()
     periodic_reload_db.start()
+    server_block_check.start()
     print("Ready")
 
 @tree.command(name="about", description="Print about information for the SplatChain bot.")
@@ -739,6 +740,7 @@ async def test_dm(ctx: discord.Interaction):
 @tasks.loop(minutes=5)
 async def periodic_reload_db():
     reload_db()
+    load_block_list()
     print("Database reloaded.")
     
 @tasks.loop(minutes=5)
