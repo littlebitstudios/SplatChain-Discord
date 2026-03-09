@@ -164,6 +164,7 @@ async def about(ctx: discord.Interaction):
         description="SplatChain is a fictional cryptocurrency system created for Splatoon roleplays.",
         color=discord.colour.Color.blue()
     )
+    embed.add_field(name="SplatChain Next", value="SplatChain Next is now available, featuring some breaking changes compared to the original SplatChain.\nThe original SplatChain (this bot) is no longer receiving updates.\nSee the [GitHub repo](https://github.com/littlebitstudios/splatchain-discord) for more info.\nUse [this link](https://discord.com/oauth2/authorize?client_id=1480290551612838020) to install SplatChain Next as a personal or server bot.", inline=False)
     embed.add_field(name="SPLC's Equivalence", value="A SPLC is equal to 1 cent (US), 100 SPLC is equal to $1.00.\nSPLC is completely fictional and has no real-world value.", inline=False)
     embed.add_field(name="Commands", value="To see all commands, click the Apps icon (it looks like random shapes) and select SplatChain.\nAlternatively, type `/` in the chat and look for the green and pink icon with the dollar sign.", inline=False)
     embed.add_field(name="Enable DMs", value="If you're joining the roleplays, make sure to add me to your account so I can send you DMs. To learn how to do this, run the /testdm command.", inline=False)
@@ -197,7 +198,7 @@ async def list_info(ctx: discord.Interaction, wallet: str, show: bool=False):
         embed.add_field(name="Balance", value=f"{int(profile['balance']):,} SPLC", inline=False)
         
         if not show:
-            embed.set_footer(text="To show this wallet to server members, rerun this command with 'show' set to true.")
+            embed.set_footer(text="To show this wallet to server members, rerun this command with 'show' set to true.\nUpgrading to SplatChain Next is recommended. See the /about command for more info.")
         
         await ctx.response.send_message(embed=embed, ephemeral=(not show))
     else:
@@ -247,6 +248,7 @@ async def new_wallet(ctx: discord.Interaction, nickname: str, username: str, typ
             description="A wallet with that username already exists. Try a different username.",
             color=discord.colour.Color.red()
         )
+        embed.set_footer(text="Upgrading to SplatChain Next is recommended. See the /about command for more info.")
         await ctx.response.send_message(embed=embed, ephemeral=True)
         return
             
@@ -264,7 +266,7 @@ async def new_wallet(ctx: discord.Interaction, nickname: str, username: str, typ
     embed.add_field(name="Owner", value=new_profile["owner"], inline=False)
     embed.add_field(name="Balance", value=f"{int(new_profile['balance']):,} SPLC", inline=False)
     embed.add_field(name="Sharing Enabled", value=str(new_profile["share"]), inline=False)
-    embed.set_footer(text="Use the /about command to learn more about the bot.\nIt is recommended to run /testdm to make sure that I can send you DMs.")
+    embed.set_footer(text="Use the /about command to learn more about the bot.\nIt is recommended to run /testdm to make sure that I can send you DMs.\nUpgrading to SplatChain Next is recommended. See the /about command for more info.")
     await ctx.response.send_message(embed=embed, ephemeral=True)
 
 @tree.command(name="delete", description="Delete a wallet.")
@@ -291,9 +293,9 @@ async def delete_wallet(ctx: discord.Interaction, wallet: str, force: bool=False
             )
             
             if profile['share']:
-                embed.set_footer(text="Performing destructive actions on a wallet you don't own will notify its owner!\nThis wallet has sharing enabled, but that does NOT mean you can delete it.")
+                embed.set_footer(text="Performing destructive actions on a wallet you don't own will notify its owner!\nThis wallet has sharing enabled, but that does NOT mean you can delete it.\nUpgrading to SplatChain Next is recommended. See the /about command for more info.")
             else:
-                embed.set_footer(text="Performing destructive actions on a wallet you don't own will notify its owner!")
+                embed.set_footer(text="Performing destructive actions on a wallet you don't own will notify its owner!\nUpgrading to SplatChain Next is recommended. See the /about command for more info.")
             
             await ctx.response.send_message(embed=embed, ephemeral=True)
             return
@@ -321,6 +323,7 @@ async def delete_wallet(ctx: discord.Interaction, wallet: str, force: bool=False
             description="That address or username does not exist.",
             color=discord.colour.Color.red()
         )
+        embed.set_footer(text="Upgrading to SplatChain Next is recommended. See the /about command for more info.")
         await ctx.response.send_message(embed=embed, ephemeral=True)
         
 @tree.command(name="transfer", description="Transfer SPLC between wallets.")
@@ -345,6 +348,7 @@ async def transfer(ctx: discord.Interaction, fromwallet: str, towallet: str, amo
             description="An address or username you gave does not exist.",
             color=discord.colour.Color.red()
         )
+        embed.set_footer(text="Upgrading to SplatChain Next is recommended. See the /about command for more info.")
         await ctx.response.send_message(embed=embed, ephemeral=True)
         return
     
@@ -356,9 +360,9 @@ async def transfer(ctx: discord.Interaction, fromwallet: str, towallet: str, amo
         )
         
         if from_profile['share']:
-            embed.set_footer(text="This wallet has sharing enabled. Its owner will not be notified if you force this action.")
+            embed.set_footer(text="This wallet has sharing enabled. Its owner will not be notified if you force this action.\nUpgrading to SplatChain Next is recommended. See the /about command for more info.")
         else:
-            embed.set_footer(text="Performing destructive actions on a wallet you don't own will notify its owner!")
+            embed.set_footer(text="Performing destructive actions on a wallet you don't own will notify its owner!\nUpgrading to SplatChain Next is recommended. See the /about command for more info.")
         
         await ctx.response.send_message(embed=embed, ephemeral=True)
         return
@@ -385,6 +389,7 @@ async def transfer(ctx: discord.Interaction, fromwallet: str, towallet: str, amo
         )
         embed.add_field(name="Sender Balance", value=f"{int(from_profile['balance']):,} SPLC", inline=False)
         embed.add_field(name="Amount Requested", value=f"{amount:,} SPLC", inline=False)
+        embed.set_footer(text="Upgrading to SplatChain Next is recommended. See the /about command for more info.")
         await ctx.response.send_message(embed=embed, ephemeral=True)
         return
 
@@ -427,11 +432,10 @@ async def edit_profile(ctx: discord.Interaction, wallet: str, nickname: str="", 
         )
         
         if profile['share']:
-            embed.set_footer(text="Performing destructive actions on a wallet you don't own will notify its owner!\nThis wallet has sharing enabled, but that does NOT mean you can edit it.")
+            embed.set_footer(text="Performing destructive actions on a wallet you don't own will notify its owner!\nThis wallet has sharing enabled, but that does NOT mean you can edit it.\nUpgrading to SplatChain Next is recommended. See the /about command for more info.")
         else:
-            embed.set_footer(text="Performing destructive actions on a wallet you don't own will notify its owner!")
-        
-        embed.set_footer(text="Performing destructive actions on a wallet you don't own will notify its owner!")
+            embed.set_footer(text="Performing destructive actions on a wallet you don't own will notify its owner!\nUpgrading to SplatChain Next is recommended. See the /about command for more info.")
+
         await ctx.response.send_message(embed=embed, ephemeral=True)
         return
     
@@ -502,6 +506,8 @@ async def edit_profile(ctx: discord.Interaction, wallet: str, nickname: str="", 
                 embed.add_field(name="New Sharing Enabled State", value=f"{share} (was {old_profile['share']})", inline=False)
             else:
                 embed.add_field(name="New Sharing Enabled State", value=f"{share} (was {old_profile['share']})\nSharing Enabled means that others can transfer from or edit this wallet without you being notified.", inline=False)
+
+        embed.set_footer(text="Upgrading to SplatChain Next is recommended. See the /about command for more info.")
         await ctx.response.send_message(embed=embed, ephemeral=True)
     else:
         embed = discord.Embed(
@@ -540,7 +546,7 @@ async def inject_splc(ctx: discord.Interaction, wallet: str, amount: int, force:
                 description="**You just tried to inject SPLC a wallet that you don't own.**\nDouble-check what you entered.\n\n*If you really meant that, try again with 'force' set to true.*",
                 color=discord.colour.Color.red()
             )
-            embed.set_footer(text="Injecting SPLC is not destructive, so forcing this will not notify the wallet's owner.")
+            embed.set_footer(text="Injecting SPLC is not destructive, so forcing this will not notify the wallet's owner.\nUpgrading to SplatChain Next is recommended. See the /about command for more info.")
             await ctx.response.send_message(embed=embed, ephemeral=True)
             return
         
@@ -588,9 +594,9 @@ async def burn_splc(ctx: discord.Interaction, wallet: str, amount: int, force: b
             )
             
             if profile['share']:
-                embed.set_footer(text="This wallet has sharing enabled. Its owner will not be notified if you force this action.")
+                embed.set_footer(text="This wallet has sharing enabled. Its owner will not be notified if you force this action.\nUpgrading to SplatChain Next is recommended. See the /about command for more info.")
             else:
-                embed.set_footer(text="Performing destructive actions on a wallet you don't own will notify its owner!")
+                embed.set_footer(text="Performing destructive actions on a wallet you don't own will notify its owner!\nUpgrading to SplatChain Next is recommended. See the /about command for more info.")
                 
             await ctx.response.send_message(embed=embed, ephemeral=True)
             return
@@ -621,6 +627,7 @@ async def burn_splc(ctx: discord.Interaction, wallet: str, amount: int, force: b
             )
             embed.add_field(name="Current Balance", value=f"{int(profile['balance']):,} SPLC", inline=False)
             embed.add_field(name="Amount Requested", value=f"{amount:,} SPLC", inline=False)
+            embed.set_footer(text="Upgrading to SplatChain Next is recommended. See the /about command for more info.")
             await ctx.response.send_message(embed=embed, ephemeral=True)
     else:
         embed = discord.Embed(
@@ -656,6 +663,7 @@ async def my_wallets(ctx: discord.Interaction, show: bool=False):
         )
         embed.add_field(name="New to SplatChain?", value="Use the /new command to create a new wallet.")
         embed.add_field(name="Thought you owned a wallet?", value="Wallet ownership is based on your Discord username. If you changed your username, use the /edit command on your wallet with 'force' and 'claim' set to true.")
+        embed.set_footer(text="Upgrading to SplatChain Next is recommended. See the /about command for more info.")
         await ctx.response.send_message(embed=embed, ephemeral=True)
         return
     else:
@@ -665,9 +673,9 @@ async def my_wallets(ctx: discord.Interaction, show: bool=False):
         )
         
         if show:
-            embed.set_footer(text="To see details for a wallet, use the /info command.")
+            embed.set_footer(text="To see details for a wallet, use the /info command.\nUpgrading to SplatChain Next is recommended. See the /about command for more info.")
         else:
-            embed.set_footer(text="To see details for a wallet, use the /info command.\nRerun this command with 'show' set to true to display this message in the channel.")
+            embed.set_footer(text="To see details for a wallet, use the /info command.\nRerun this command with 'show' set to true to display this message in the channel.\nUpgrading to SplatChain Next is recommended. See the /about command for more info.")
         
         for profile in owned_by_user:
             if profile['share']:
@@ -703,7 +711,7 @@ async def user_wallets(ctx: discord.Interaction, user: discord.User, show: bool=
             title=f"{user.name}'s Wallets",
             color=discord.colour.Color.green()
         )
-        embed.set_footer(text="To see details for a wallet, use the /info command.\nWARNING: Performing any destructive action on someone else's wallet will notify them!")
+        embed.set_footer(text="To see details for a wallet, use the /info command.\nWARNING: Performing any destructive action on someone else's wallet will notify them!\nUpgrading to SplatChain Next is recommended. See the /about command for more info.")
         for profile in owned_by_user:
             if profile['share']:
                 embed.add_field(name=f"{profile['nickname']} ({profile['username']})", value=f"Holds {int(profile['balance']):,} SPLC | **Sharing Enabled**", inline=False)
