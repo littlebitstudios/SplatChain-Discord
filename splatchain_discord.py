@@ -694,7 +694,7 @@ async def user_wallets(ctx: discord.Interaction, user: discord.User, show: bool=
     
     owned_by_user = []
     for profile in profiles:
-        if profile["owner"] == f"discord/{user.name}":
+        if profile["owner"] == f"discord/{user.id}":
             owned_by_user.append(profile)
     
     if len(owned_by_user) == 0:
