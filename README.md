@@ -7,6 +7,11 @@
 The SplatChain Bot is a Discord bot designed for roleplaying (namely in the Splatoon universe), with a fictional cryptocurrency called SPLC.
 It is designed to allow roleplayers to create fake transactions so that there can be an economy in their part of the Splatoon universe.
 
+## SplatChain Next
+For new and existing users, I recommend upgrading to SplatChain Next. Migration is very simple, all wallet data on my instance has been kept.
+
+See more about SplatChain Next [here](https://github.com/littlebitstudios/splatchain-discord/tree/next). The original SplatChain will remain running for now.
+
 ## Install the Bot
 You may install my instance of the bot by clicking [here](https://discord.com/oauth2/authorize?client_id=1288934248077594797).
 If you host your own instance you can find the invite link in the Discord Developer Portal.
