@@ -13,10 +13,11 @@ You're looking at the branch for SplatChain Next. This bot has some breaking cha
 - Addresses are now in Base58
 - Identifies users with User IDs instead of usernames
 
-For people I know, I will personally migrate them. I will not be deleting wallets from the original SplatChain. Want me to migrate you? Send me a DM: `@littlebit670`.
+For people I know, I will personally migrate them. I will not be deleting wallets from the original SplatChain. Want me to migrate you? Send me a DM: `@littlebit670`.\
+If you know your wallet's username (*.ink), you can migrate using `/edit` with `force` and `claim` set to true.
 
 ## Install the Bot
-You may install my instance of the bot by clicking [here](https://discord.com/oauth2/authorize?client_id=1288934248077594797).
+You may install my instance of the bot by clicking [here](https://discord.com/oauth2/authorize?client_id=1480290551612838020).
 If you host your own instance you can find the invite link in the Discord Developer Portal.
 
 ## Host your own instance
