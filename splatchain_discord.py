@@ -166,6 +166,7 @@ async def about(ctx: discord.Interaction):
         description="SplatChain is a fictional cryptocurrency system created for Splatoon roleplays.",
         color=discord.colour.Color.blue()
     )
+    embed.add_field(name="SplatChain Next", value="You're using SplatChain Next, a new version of SplatChain with major changes compared to the original.\nSee the [GitHub repo](https://github.com/littlebitstudios/splatchain-discord) for more info.", inline=False)
     embed.add_field(name="SPLC's Equivalence", value="A SPLC is equal to 1 cent (US), 100 SPLC is equal to $1.00.\nSPLC is completely fictional and has no real-world value.", inline=False)
     embed.add_field(name="Commands", value="To see all commands, click the Apps icon (it looks like random shapes) and select SplatChain.\nAlternatively, type `/` in the chat and look for the green and pink icon with the dollar sign.", inline=False)
     embed.add_field(name="Enable DMs", value="If you're joining the roleplays, make sure to add me to your account so I can send you DMs. To learn how to do this, run the /testdm command.", inline=False)
@@ -657,7 +658,7 @@ async def my_wallets(ctx: discord.Interaction, show: bool=False):
             color=discord.colour.Color.red()
         )
         embed.add_field(name="New to SplatChain?", value="Use the /new command to create a new wallet.")
-        embed.add_field(name="Thought you owned a wallet?", value="Wallet ownership is based on your Discord username. If you changed your username, use the /edit command on your wallet with 'force' and 'claim' set to true.")
+        embed.add_field(name="Thought you owned a wallet?", value="Wallet ownership is now based on your User ID. If you had a wallet from before SplatChain Next was a thing and you remember its address, run /edit on that wallet with `force` and `claim` set to true.")
         await ctx.response.send_message(embed=embed, ephemeral=True)
         return
     else:
@@ -673,7 +674,7 @@ async def my_wallets(ctx: discord.Interaction, show: bool=False):
         
         for profile in owned_by_user:
             if profile['share']:
-                embed.add_field(name=f"{profile['nickname']} ({profile['username']})", value=f"Holds {int(profile['balance']):,} SPLC | **Sharing Enabled**", inline=False)
+                embed.add_field(name=f"{profile['nickname']} ({profile['username']} | {profile['address'][:5]}...{profile['address'][-5:]})", value=f"Holds {int(profile['balance']):,} SPLC | **Sharing Enabled**", inline=False)
             else:
                 embed.add_field(name=f"{profile['nickname']} ({profile['username']})", value=f"Holds {int(profile['balance']):,} SPLC", inline=False)
             
@@ -708,7 +709,7 @@ async def user_wallets(ctx: discord.Interaction, user: discord.User, show: bool=
         embed.set_footer(text="To see details for a wallet, use the /info command.\nWARNING: Performing any destructive action on someone else's wallet will notify them!")
         for profile in owned_by_user:
             if profile['share']:
-                embed.add_field(name=f"{profile['nickname']} ({profile['username']})", value=f"Holds {int(profile['balance']):,} SPLC | **Sharing Enabled**", inline=False)
+                embed.add_field(name=f"{profile['nickname']} ({profile['username']} | {profile['address'][:5]}...{profile['address'][-5:]})", value=f"Holds {int(profile['balance']):,} SPLC | **Sharing Enabled**", inline=False)
             else:
                 embed.add_field(name=f"{profile['nickname']} ({profile['username']})", value=f"Holds {int(profile['balance']):,} SPLC", inline=False)
         await ctx.response.send_message(embed=embed, ephemeral=(not show))
