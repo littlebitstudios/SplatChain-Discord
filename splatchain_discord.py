@@ -676,7 +676,7 @@ async def my_wallets(ctx: discord.Interaction, show: bool=False):
             if profile['share']:
                 embed.add_field(name=f"{profile['nickname']} ({profile['username']} | {profile['address'][:5]}...{profile['address'][-5:]})", value=f"Holds {int(profile['balance']):,} SPLC | **Sharing Enabled**", inline=False)
             else:
-                embed.add_field(name=f"{profile['nickname']} ({profile['username']})", value=f"Holds {int(profile['balance']):,} SPLC", inline=False)
+                embed.add_field(name=f"{profile['nickname']} ({profile['username']} | {profile['address'][:5]}...{profile['address'][-5:]})", value=f"Holds {int(profile['balance']):,} SPLC", inline=False)
             
         await ctx.response.send_message(embed=embed, ephemeral=(not show))
 
@@ -711,7 +711,7 @@ async def user_wallets(ctx: discord.Interaction, user: discord.User, show: bool=
             if profile['share']:
                 embed.add_field(name=f"{profile['nickname']} ({profile['username']} | {profile['address'][:5]}...{profile['address'][-5:]})", value=f"Holds {int(profile['balance']):,} SPLC | **Sharing Enabled**", inline=False)
             else:
-                embed.add_field(name=f"{profile['nickname']} ({profile['username']})", value=f"Holds {int(profile['balance']):,} SPLC", inline=False)
+                embed.add_field(name=f"{profile['nickname']} ({profile['username']} | {profile['address'][:5]}...{profile['address'][-5:]})", value=f"Holds {int(profile['balance']):,} SPLC", inline=False)
         await ctx.response.send_message(embed=embed, ephemeral=(not show))
         
 @tree.command(name="testdm", description="Send a test DM to yourself.")
